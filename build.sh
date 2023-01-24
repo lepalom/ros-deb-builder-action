@@ -70,6 +70,7 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
   
   # Get the PKG_NAME
   PKG_NAME="$(cat debian/changelog | head -n1 | sed -e 's/\s.*$//')"
+  PKG_VERSION="`head -n1 debian/changelog | awk -F'[()]' '{print $2}'`"
 
   # https://github.com/ros-infrastructure/bloom/pull/643
   echo 11 > debian/compat
@@ -82,7 +83,7 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
   COUNT=$((COUNT+1))
   
   # pushing to the repo
-  reprepro --basedir /home/runner/apt_repo -C main include $DEB_DISTRO /home/runner/build_repo/$PKG_NAME*.changes
+  reprepro --basedir /home/runner/apt_repo -C main include $DEB_DISTRO /home/runner/build_repo/$PKG_NAME_$PKG_VERSION.changes
   echo "::endgroup::"
 done
 
