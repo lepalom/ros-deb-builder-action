@@ -30,7 +30,6 @@ $build_path = "/build/package/";
 $dsc_dir = "package";
 $unshare_bind_mounts = [ { directory => '/home/runner/.cache/ccache', mountpoint => '/build/ccache' } ];
 $verbose = 1;
-$build_source = 1;
 EOF
 echo "$SBUILD_CONF" >> ~/.sbuildrc
 
