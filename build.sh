@@ -35,14 +35,14 @@ case $ROS_DISTRO in
 esac
 
 # make output directory
-mkdir /home/runner/apt_repo
+mkdir /home/runner/build_repo
 
 echo "Add unreleased packages to rosdep"
 
 for PKG in $(catkin_topological_order --only-names); do
-  printf "%s:\n  %s:\n  - %s\n" "$PKG" "$DISTRIBUTION" "ros-$ROS_DEB$(printf '%s' "$PKG" | tr '_' '-')" >> /home/runner/apt_repo/local.yaml
+  printf "%s:\n  %s:\n  - %s\n" "$PKG" "$DISTRIBUTION" "ros-$ROS_DEB$(printf '%s' "$PKG" | tr '_' '-')" >> /home/runner/build_repo/local.yaml
 done
-echo "yaml file:///home/runner/apt_repo/local.yaml $ROS_DISTRO" | sudo tee /etc/ros/rosdep/sources.list.d/1-local.list
+echo "yaml file:///home/runner/build_repo/local.yaml $ROS_DISTRO" | sudo tee /etc/ros/rosdep/sources.list.d/1-local.list
 printf "%s" "$ROSDEP_SOURCE" | sudo tee /etc/ros/rosdep/sources.list.d/2-remote.list
 
 rosdep update
@@ -66,17 +66,23 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
   bloom-generate "${BLOOM}debian" --os-name="$DISTRIBUTION" --os-version="$DEB_DISTRO" --ros-distro="$ROS_DISTRO"
 
   # Set the version
-  sed -i "1 s/([^)]*)/($(git describe --tag || echo 0)-$(date +%Y.%m.%d.%H.%M))/" debian/changelog
+  sed -i "1 s/([^)]*)/($(git describe --tag || echo 0)-$(date +%Y%m%d~r4d+%H.%M))/" debian/changelog
+  
+  # Get the PKG_NAME
+  PKG_NAME=$(cat debian/changelog | head -n1 | sed -e 's/\s.*$//')
 
   # https://github.com/ros-infrastructure/bloom/pull/643
   echo 11 > debian/compat
 
   # dpkg-source-opts: no need for upstream.tar.gz
   sbuild --chroot-mode=unshare --no-clean-source --no-run-lintian \
-    --dpkg-source-opts="-Zgzip -z1 --format=1.0 -sn" --build-dir=/home/runner/apt_repo \
-    --extra-package=/home/runner/apt_repo "$@"
+    --dpkg-source-opts="-Zgzip -z1 --format=1.0 -sn" --build-dir=/home/runner/build_repo \
+    --extra-package=/home/runner/build_repo "$@"
   )
   COUNT=$((COUNT+1))
+  
+  # pushing to the repo
+  reprepro --basedir /home/runner/apt_repo -C main include $DISTRIBUTION-ros4debian /home/runner/build_repo/$PKG_NAME*.changes
   echo "::endgroup::"
 done
 
