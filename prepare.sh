@@ -7,7 +7,7 @@ echo "Install dependencies"
 
 sudo add-apt-repository -y ppa:v-launchpad-jochen-sprickerhof-de/sbuild
 sudo apt update
-sudo apt install -y mmdebstrap distro-info debian-archive-keyring ccache curl vcstool python3-rosdep2 sbuild catkin python3-bloom
+sudo apt install -y mmdebstrap distro-info debian-archive-keyring ccache curl vcstool python3-rosdep2 sbuild catkin python3-bloom reprepro
 
 echo "Setup build environment"
 
@@ -45,3 +45,18 @@ case $REPOS_FILE in
     vcs import src < "$REPOS_FILE"
     ;;
 esac
+
+# preparing for reprepro
+mkdir -p /home/runner/apt_repo/conf
+cat << "EOF" > /home/runner/apt_repo/conf/distributions
+Origin: Debian Robotics
+Label: Debian Robotics Ros4Debian
+Suite: bullseye-ros4debian
+Codename: bullseye-ros4debian
+Architectures: amd64 source
+Components: main 
+UDebComponents: main 
+Description: Unofficial Debian packages generated using github action based in bullseye-robotics.
+Contents:
+DscIndices: Sources Release . .gz
+EOF
