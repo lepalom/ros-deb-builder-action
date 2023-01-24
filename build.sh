@@ -72,7 +72,7 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
   PKG_NAME="`cat debian/changelog | head -n1 | sed -e 's/\s.*$//'`"
   PKG_VERSION="`head -n1 debian/changelog | awk -F'[()]' '{print $2}'`"
   PACKAGE=$PKG_NAME'_'$PKG_VERSION
-  UPSTREAM_NAME=`cat debian/changelog | head -n1 | sed -e 's/\s.*$//'| sed -e 's/^ros-//'`
+  UPSTREAM_NAME=`cat debian/changelog | head -n1 | sed -e 's/\s.*$//'| sed -e 's/^ros-//' | sed -e 's/-/_/'`
   UPSTREAM_VERSION="`git describe --tags`"
   PACKAGE_ORIG_VERSION=$PKG_NAME'_'$UPSTREAM_VERSION
   
