@@ -6,8 +6,8 @@ set -ex
 vcs export src --exact-with-tags > /home/runner/apt_repo/sources.repos
 
 cd /home/runner/apt_repo
-apt-ftparchive packages . > Packages
-apt-ftparchive release . > Release
+#apt-ftparchive packages . > Packages
+#apt-ftparchive release . > Release
 
 REPOSITORY="$(printf "%s" "$GITHUB_REPOSITORY" | tr / _)"
 echo '```bash' > README.md
