@@ -80,7 +80,7 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
   echo 11 > debian/compat
   
   # Generate orig.tar.bz2
-  tar cvfz ../$PACKAGE_ORIG_VERSION.orig.tar.bz2 --exclude .git --exclude debian ../$UPSTREAM_NAME
+  tar cvfj ../$PACKAGE_ORIG_VERSION.orig.tar.bz2 --exclude .git --exclude debian ../$UPSTREAM_NAME
   
   # dpkg-source-opts: no need for upstream.tar.gz
   sbuild --chroot-mode=unshare --no-clean-source --no-run-lintian \
