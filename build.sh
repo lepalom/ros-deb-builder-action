@@ -72,6 +72,7 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
   PKG_NAME="`cat debian/changelog | head -n1 | sed -e 's/\s.*$//'`"
   PKG_VERSION="`head -n1 debian/changelog | awk -F'[()]' '{print $2}'`"
   PACKAGE=$PKG_NAME'_'$PKG_VERSION
+  UPSTREAM_NAME=`cat debian/changelog | head -n1 | sed -e 's/\s.*$//'| sed -e 's/^ros-//'`
   UPSTREAM_VERSION="`git describe --tags`"
   PACKAGE_ORIG_VERSION=$PKG_NAME'_'$UPSTREAM_VERSION
   
@@ -79,7 +80,7 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
   echo 11 > debian/compat
   
   # Generate orig.tar.bz2
-  tar cvfz ../$PACKAGE_ORIG_VERSION.orig.tar.bz2 --exclude .git --exclude debian ../$PKG_NAME
+  tar cvfz ../$PACKAGE_ORIG_VERSION.orig.tar.bz2 --exclude .git --exclude debian ../$UPSTREAM_NAME
   
   # dpkg-source-opts: no need for upstream.tar.gz
   sbuild --chroot-mode=unshare --no-clean-source --no-run-lintian \
