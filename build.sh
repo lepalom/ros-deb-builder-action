@@ -82,7 +82,7 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
   COUNT=$((COUNT+1))
   
   # pushing to the repo
-  reprepro --basedir /home/runner/apt_repo -C main include $DISTRIBUTION-ros4debian /home/runner/build_repo/$PKG_NAME*.changes
+  reprepro --basedir /home/runner/apt_repo -C main include $DEB_DISTRO-ros4debian /home/runner/build_repo/$PKG_NAME*.changes
   echo "::endgroup::"
 done
 
