@@ -52,8 +52,8 @@ mkdir -p /home/runner/apt_repo/conf
 cat << "EOF" > /home/runner/apt_repo/conf/distributions
 Origin: Debian Robotics
 Label: Debian Robotics Ros4Debian
-Suite: $DEB_DISTRO-ros4debian
-Codename: $DEB_DISTRO
+Suite: bullseye-ros4debian
+Codename: bullseye
 Architectures: amd64 source
 Components: main 
 UDebComponents: main 
