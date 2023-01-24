@@ -69,7 +69,7 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
   sed -i "1 s/([^)]*)/($(git describe --tag || echo 0)-$(date +%Y%m%d~r4d+%H.%M))/" debian/changelog
   
   # Get the PKG_NAME
-  PKG_NAME="$(cat debian/changelog | head -n1 | sed -e 's/\s.*$//')"
+  PKG_NAME="`cat debian/changelog | head -n1 | sed -e 's/\s.*$//'`"
   PKG_VERSION="`head -n1 debian/changelog | awk -F'[()]' '{print $2}'`"
 
   # https://github.com/ros-infrastructure/bloom/pull/643
