@@ -79,11 +79,11 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
   sbuild --chroot-mode=unshare --no-clean-source --no-run-lintian \
     --dpkg-source-opts="-Zgzip -z1 --format=1.0 -sn" --build-dir=/home/runner/build_repo \
     --extra-package=/home/runner/build_repo "$@"
-  )
-  COUNT=$((COUNT+1))
   
   # pushing to the repo
   reprepro --basedir /home/runner/apt_repo -C main include $DEB_DISTRO /home/runner/build_repo/$PKG_NAME_$PKG_VERSION.changes
+  )
+  COUNT=$((COUNT+1))
   echo "::endgroup::"
 done
 
