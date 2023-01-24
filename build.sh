@@ -72,18 +72,24 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
   PKG_NAME="`cat debian/changelog | head -n1 | sed -e 's/\s.*$//'`"
   PKG_VERSION="`head -n1 debian/changelog | awk -F'[()]' '{print $2}'`"
   PACKAGE=$PKG_NAME'_'$PKG_VERSION
+  UPSTREAM_VERSION="`git describe --tags`"
+  PACKAGE_ORIG_VERSION=$PKG_NAME'_'$UPSTREAM_VERSION
+  
   # https://github.com/ros-infrastructure/bloom/pull/643
   echo 11 > debian/compat
-
+  
+  # Generate orig.tar.bz2
+  tar cvfz ../$PACKAGE_ORIG_VERSION.orig.tar.bz2 --exclude .git --exclude debian ../$PKG_NAME
+  
   # dpkg-source-opts: no need for upstream.tar.gz
   sbuild --chroot-mode=unshare --no-clean-source --no-run-lintian \
     --dpkg-source-opts="-Zgzip -z1 --format=1.0 -sn" --build-dir=/home/runner/build_repo \
     --extra-package=/home/runner/build_repo "$@"
-  FILES="`ls /home/runner/build_repo/$PKG_NAME'*'`"
-  echo $FILES
    
   # pushing to the repo
-  reprepro --basedir /home/runner/apt_repo -C main include $DEB_DISTRO /home/runner/build_repo/$PACKAGE.changes
+  cd ..
+  reprepro --basedir /home/runner/apt_repo -C main include $DEB_DISTRO $PACKAGE.changes
+  cd "$PKG_PATH"
   )
   COUNT=$((COUNT+1))
   echo "::endgroup::"
