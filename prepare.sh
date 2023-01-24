@@ -60,4 +60,6 @@ UDebComponents: main
 Description: Unofficial Debian packages generated using github action based in bullseye-robotics.
 Contents:
 DscIndices: Sources Release . .gz
+DebOverride: override.bullseye
+DscOverride: override.bullseye
 EOF
