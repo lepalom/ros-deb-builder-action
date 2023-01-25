@@ -88,9 +88,7 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
     --extra-package=/home/runner/build_repo "$@"
    
   # pushing to the repo
-  cd ..
-  reprepro --basedir /home/runner/apt_repo -C main includedeb $DEB_DISTRO /build/package/$PACKAGE*.deb
-  cd "$PKG_PATH"
+  reprepro --basedir /home/runner/apt_repo -C main includedeb $DEB_DISTRO ../$PACKAGE*.deb
   )
   COUNT=$((COUNT+1))
   echo "::endgroup::"
