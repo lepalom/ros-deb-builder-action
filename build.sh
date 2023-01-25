@@ -54,6 +54,7 @@ export DEB_BUILD_OPTIONS=nocheck
 
 TOTAL="$(catkin_topological_order --only-names | wc -l)"
 COUNT=1
+ARCH=amd64
 
 # TODO: use colcon list -tp in future
 for PKG_PATH in $(catkin_topological_order --only-folders); do
@@ -71,7 +72,7 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
   # Get the PKG_NAME
   PKG_NAME="`cat debian/changelog | head -n1 | sed -e 's/\s.*$//'`"
   PKG_VERSION="`head -n1 debian/changelog | awk -F'[()]' '{print $2}'`"
-  PACKAGE=$PKG_NAME'_'$PKG_VERSION
+  PACKAGE=$PKG_NAME'_'$PKG_VERSION'_'$ARCH
   UPSTREAM_NAME=`cat debian/changelog | head -n1 | sed -e 's/\s.*$//'| sed -e 's/^ros-//' | sed -e 's/-/_/'`
   UPSTREAM_VERSION="`git describe --tags`"
   PACKAGE_ORIG_VERSION=$PKG_NAME'_'$UPSTREAM_VERSION
@@ -87,7 +88,7 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
     --dpkg-source-opts="-Zgzip -z1 --format=1.0 -sn" --build-dir=/home/runner/build_repo \
     --extra-package=/home/runner/build_repo "$@"
   
-  ls -l /home/runner/build_repo/* 
+  #ls -l /home/runner/build_repo/* 
   # pushing to the repo
   reprepro --basedir /home/runner/apt_repo -C main include $DEB_DISTRO /home/runner/build_repo/$PACKAGE.changes
   )
