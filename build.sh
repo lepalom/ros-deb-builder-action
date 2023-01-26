@@ -67,7 +67,7 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
   bloom-generate "${BLOOM}debian" --os-name="$DISTRIBUTION" --os-version="$DEB_DISTRO" --ros-distro="$ROS_DISTRO"
 
   # Set the version
-  sed -i "1 s/([^)]*)/($(git describe --tag || echo 0)-$(date +%Y%m%d~r4d+%H.%M))/" debian/changelog
+  sed -i "1 s/([^)]*)/($(git describe --tag || echo 0)-$(date +%Y%m%d~rop+%H.%M))/" debian/changelog
   
   # Get the PKG_NAME
   PKG_NAME="`cat debian/changelog | head -n1 | sed -e 's/\s.*$//'`"
