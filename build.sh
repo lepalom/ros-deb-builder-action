@@ -64,7 +64,10 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
   (
   cd "$PKG_PATH"
 
-  bloom-generate "${BLOOM}debian" --os-name="$DISTRIBUTION" --os-version="$DEB_DISTRO" --ros-distro="$ROS_DISTRO"
+  if ! bloom-generate "${BLOOM}debian" --os-name="$DISTRIBUTION" --os-version="$DEB_DISTRO" --ros-distro="$ROS_DISTRO"; then
+    echo "- bloom-generate of $(basename $PKG_PATH)" >> /home/runner/apt_repo/Failed.md
+    exit 0
+  fi
 
   # Set the version
   sed -i "0,/)/ s/)/~rop+$(date +%Y%m%d+%H.%M))/" debian/changelog
@@ -86,7 +89,7 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
   # dpkg-source-opts: no need for upstream.tar.gz
   sbuild --chroot-mode=unshare --no-clean-source --no-run-lintian \
     --dpkg-source-opts="-Zgzip -z1 --format=1.0 -sn" --build-dir=/home/runner/build_repo \
-    --extra-package=/home/runner/build_repo "$@"
+    --extra-package=/home/runner/build_repo "$@"  || echo "- [$(catkin_topological_order --only-names)]($(basename /home/runner/apt_repo/$(head -n1 debian/changelog | cut -d' ' -f1)*-*T*.build))" >> /home/runner/apt_repo/Failed.md
   
   #ls -l /home/runner/build_repo/* 
   # pushing to the repo
