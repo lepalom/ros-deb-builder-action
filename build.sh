@@ -93,7 +93,7 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
   
   #ls -l /home/runner/build_repo/* 
   # pushing to the repo
-  reprepro --basedir /home/runner/apt_repo -C main include $DEB_DISTRO /home/runner/build_repo/$PACKAGE.changes
+  reprepro --basedir /home/runner/apt_repo -C main include $DEB_DISTRO /home/runner/build_repo/$PACKAGE.changes  || echo "- [$(catkin_topological_order --only-names)]($(basename /home/runner/apt_repo/$(head -n1 debian/changelog | cut -d' ' -f1)*-*T*.build))" >> /home/runner/apt_repo/Failed.md
   )
   COUNT=$((COUNT+1))
   echo "::endgroup::"
